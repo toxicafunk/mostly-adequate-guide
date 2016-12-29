@@ -42,16 +42,29 @@ require([
 
     var mediaUrl = _.compose(_.prop('m'), _.prop('media'));
 
-    var srcs = _.compose(_.map(mediaUrl), _.prop('items'));
+    /*var srcs = _.compose(_.map(mediaUrl), _.prop('items'));
 
-    var images = _.compose(_.map(img), srcs);
+    var images = _.compose(_.map(img), srcs);*/
 
+    ////////////////////////////////////////////
+    // Optimization
+    //
+    // var images = _.compose(_.map(img), _.map(mediaUrl), _.prop('items'));
+
+    // Composition law on maps
+    //var images = _.compose(_.map(_.compose(img, mediaUrl)), _.prop('items'))
+
+    // make it readable
+    var mediaToImg = _.compose(img, mediaUrl)
+    var images = _.compose(_.map(mediaToImg), _.prop('items'))
 
     ////////////////////////////////////////////
     // Impure
     //
+    //var renderImages = _.compose(Impure.setHtml("body"), srcs)
     var renderImages = _.compose(Impure.setHtml("body"), images)
+    //var app = _.compose(Impure.getJSON(trace('response')), url)
     var app = _.compose(Impure.getJSON(renderImages), url)
 
-    app("cats")
+    app("tegucigalpa")
   });
